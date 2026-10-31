@@ -4,12 +4,17 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 export default function Home() {
+  // Door Entrance State
+  const [doorStatus, setDoorStatus] = useState("locked"); // "locked" | "opening" | "opened"
+  const [enteredPassword, setEnteredPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+
   // Envelope / Surprise Unlock state
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const audioContextRef = useRef(null);
 
-  // Love Counter state
+  // Relationship start date: 28 Dec 2024
   const [timeTogether, setTimeTogether] = useState({
     days: 0,
     hours: 0,
@@ -27,28 +32,28 @@ export default function Home() {
   // Floating hearts count
   const [hearts, setHearts] = useState([]);
 
-  // Memory timeline
+  // Memory timeline with real dates
   const memories = [
     {
-      date: "The Day We Met",
-      title: "যেদিন প্রথম তোমাকে দেখেছিলাম",
-      desc: "প্রথম দিন তোমার চোখের দিকে তাকিয়ে মনে হয়েছিল, জীবনের শ্রেষ্ঠ গল্পটা এইমাত্র শুরু হলো। তোমার হাসির মাঝে আমি আমার পৃথিবী খুঁজে পেয়েছিলাম।",
-      tag: "💖 First Spark",
+      date: "28 December 2024",
+      title: "যেদিন আমাদের ভালোবাসার সূচনা হলো",
+      desc: "২০২৪ সালের ২৮শে ডিসেম্বর—যেদিন আমাদের দুটি হৃদয় এক হয়েছিল। আমাদের পবিত্র ভালোবাসার গল্প লেখার প্রথম ও শ্রেষ্ঠ দিন।",
+      tag: "💖 Relationship Began",
     },
     {
-      date: "Our Endless Late Night Talks",
-      title: "ঘুমহীন রাতের দীর্ঘ আলাপ",
+      date: "Every Late Night & Midnight",
+      title: "ঘুমহীন রাতের মিষ্টি আলাপ",
       desc: "রাত যখন গভীর হতো, আমাদের কথা ততই মধুর হতো। পৃথিবীর সব ক্লান্তি মুছে দিত তোমার মিষ্টি গলার একটা কথা।",
       tag: "🌙 Sweet Whispers",
     },
     {
-      date: "Every Shared Smile & Dream",
+      date: "Every Shared Dream & Promise",
       title: "একসাথে দেখা প্রতিটি স্বপ্ন",
       desc: "আমাদের স্বপ্নগুলো একে অপরের সাথে জুড়ে গেছে। প্রতিটি হাসিতে, প্রতিটি অনুভূতির প্রতিটি সেকেন্ডে শুধু তুমি আর তুমি।",
       tag: "✨ Pure Magic",
     },
     {
-      date: "Today & All The Tomorrows",
+      date: "Today & Forever Beyond",
       title: "আজ এবং আমাদের অনন্ত ভবিষ্যৎ",
       desc: "যতদিন আকাশ থাকবে, যতদিন এই হৃদস্পন্দন থাকবে—আমার প্রতিটি মুহূর্তের নিঃশ্বাসে শুধু তোমার নাম থাকবে, বর্ষা।",
       tag: "💍 Forever & Always",
@@ -100,9 +105,9 @@ export default function Home() {
     setHearts(generated);
   }, []);
 
-  // Love timer calculation
+  // Love timer calculation from December 28, 2024
   useEffect(() => {
-    const startDate = new Date("2023-01-01T00:00:00");
+    const startDate = new Date("2024-12-28T00:00:00");
     const interval = setInterval(() => {
       const now = new Date();
       const difference = now.getTime() - startDate.getTime();
@@ -131,24 +136,24 @@ export default function Home() {
         ctx.resume();
       }
 
-      const notes = [261.63, 329.63, 392.0, 493.88, 523.25, 659.25];
+      const notes = [261.63, 329.63, 392.0, 493.88, 523.25, 659.25, 783.99];
       notes.forEach((freq, idx) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "sine";
-        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.18);
-        gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.18);
-        gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + idx * 0.18 + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.18 + 1.8);
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.16);
+        gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.16);
+        gain.gain.exponentialRampToValueAtTime(0.14, ctx.currentTime + idx * 0.16 + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.16 + 1.8);
 
         osc.connect(gain);
         gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + idx * 0.18);
-        osc.stop(ctx.currentTime + idx * 0.18 + 2.0);
+        osc.start(ctx.currentTime + idx * 0.16);
+        osc.stop(ctx.currentTime + idx * 0.16 + 2.0);
       });
       setIsPlayingAudio(true);
     } catch {
-      // Audio not permitted or supported
+      // Audio fallback
     }
   };
 
@@ -187,6 +192,21 @@ export default function Home() {
     }
   };
 
+  const handleDoorUnlock = (e) => {
+    e?.preventDefault();
+    if (enteredPassword.trim().toLowerCase() === "boldi143") {
+      setPasswordError(false);
+      setDoorStatus("opening");
+      triggerCelebration();
+      setTimeout(() => {
+        setDoorStatus("opened");
+      }, 1500);
+    } else {
+      setPasswordError(true);
+      setTimeout(() => setPasswordError(false), 800);
+    }
+  };
+
   const moveNoButton = () => {
     const randomX = (Math.random() - 0.5) * 180;
     const randomY = (Math.random() - 0.5) * 120;
@@ -195,6 +215,87 @@ export default function Home() {
 
   return (
     <main className="app-container">
+      {/* 3D MAGICAL DOOR ENTRANCE OVERLAY */}
+      {doorStatus !== "opened" && (
+        <div className={`door-overlay ${doorStatus}`}>
+          <div className="door-wrapper">
+            <div className="door-frame">
+              <div className="door-leaf left">
+                <div style={{ fontSize: "2.5rem", opacity: 0.7 }}>🌹</div>
+              </div>
+              <div className="door-leaf right">
+                <div style={{ fontSize: "2.5rem", opacity: 0.7 }}>✨</div>
+              </div>
+            </div>
+
+            {/* Lock Modal Card */}
+            {doorStatus === "locked" && (
+              <div className={`door-lock-card ${passwordError ? "shake" : ""}`}>
+                <div style={{ fontSize: "3rem", marginBottom: "10px" }}>🔐</div>
+                <h2
+                  className="gradient-text"
+                  style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: "8px" }}
+                >
+                  Secret Love Portal
+                </h2>
+                <p style={{ color: "#d9a7c7", fontSize: "0.9rem", marginBottom: "20px" }}>
+                  শুধুমাত্র বর্ষার জন্য সংরক্ষিত। প্রবেশের জন্য বিশেষ পাসওয়ার্ডটি লিখুন ❤️
+                </p>
+
+                <form onSubmit={handleDoorUnlock}>
+                  <input
+                    type="password"
+                    placeholder="Enter Secret Password..."
+                    value={enteredPassword}
+                    onChange={(e) => setEnteredPassword(e.target.value)}
+                    autoFocus
+                    style={{
+                      width: "100%",
+                      padding: "14px 18px",
+                      borderRadius: "50px",
+                      border: passwordError
+                        ? "2px solid #ff3366"
+                        : "1.5px solid rgba(255, 140, 190, 0.4)",
+                      background: "rgba(10, 4, 20, 0.7)",
+                      color: "#fff",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                      outline: "none",
+                      marginBottom: "14px",
+                    }}
+                  />
+
+                  {passwordError && (
+                    <p style={{ color: "#ff4d6d", fontSize: "0.82rem", marginBottom: "12px" }}>
+                      ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিয়ে দরজা খুলুন 🥺
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="btn-romance"
+                    style={{ width: "100%", padding: "12px 20px" }}
+                  >
+                    ✨ Unlock The Door ✨
+                  </button>
+                </form>
+
+                <p
+                  style={{
+                    color: "#a48099",
+                    fontSize: "0.78rem",
+                    marginTop: "16px",
+                    fontStyle: "italic",
+                  }}
+                >
+                  Hint: পারভেজের দেওয়া বিশেষ ডাকনাম + 143
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Dynamic ambient floating orbs */}
       <div className="ambient-glow-1" />
       <div className="ambient-glow-2" />
@@ -278,7 +379,7 @@ export default function Home() {
               textTransform: "uppercase",
             }}
           >
-            A Dedicated Love Tribute
+            Since 28 December 2024
           </span>
         </div>
 
@@ -459,7 +560,8 @@ export default function Home() {
             >
               <p>
                 প্রিয় বর্ষা, তুমি আমার জীবনে আসা সেই অদ্ভুত সুন্দর বৃষ্টি, যা আমার সমস্ত রুক্ষতাকে মুছে দিয়ে 
-                হৃদয়কে একরাশ সজীবতায় ভরিয়ে দিয়েছে। তোমার সাথে কাটানো প্রতিটা দিন, প্রতিটা মুহূর্ত যেন এক রূপকথার গল্প।
+                হৃদয়কে একরাশ সজীবতায় ভরিয়ে দিয়েছে। ২০২৪ সালের ২৮শে ডিসেম্বর থেকে শুরু হওয়া আমাদের এই যাত্রা 
+                আমার জীবনের শ্রেষ্ঠ উপহার।
               </p>
               <p>
                 যখনই তোমার কথা মনে পড়ে, নিজের অজান্তেই মুখে এক চিলতে হাসি চলে আসে। তোমার রাগ, তোমার অভিমান, 
@@ -467,7 +569,7 @@ export default function Home() {
               </p>
               <p>
                 আমি হয়তো পৃথিবীর সব ধন-সম্পদ দিতে পারব না, কিন্তু কথা দিচ্ছি—জীবনের শেষ নিঃশ্বাস পর্যন্ত 
-                 তোমায় নিঃশর্ত ভালোবাসবো, আগলে রাখবো এবং তোমার চোখের কোণে কখনো অশ্রু জমতে দেব না।
+                তোমায় নিঃশর্ত ভালোবাসবো, আগলে রাখবো এবং তোমার চোখের কোণে কখনো অশ্রু জমতে দেব না।
               </p>
             </div>
 
@@ -505,7 +607,98 @@ export default function Home() {
         )}
       </section>
 
-      {/* LOVE COUNTER DISPLAY */}
+      {/* SPECIAL BIRTHDAYS CARD DISPLAY */}
+      <section
+        style={{
+          width: "100%",
+          maxWidth: "1050px",
+          padding: "10px 16px 40px",
+          zIndex: 10,
+        }}
+      >
+        <div
+          className="glass-panel"
+          style={{
+            padding: "30px 24px",
+            background: "linear-gradient(135deg, rgba(30, 12, 50, 0.75), rgba(46, 16, 70, 0.75))",
+            textAlign: "center",
+          }}
+        >
+          <span
+            style={{
+              textTransform: "uppercase",
+              fontSize: "0.8rem",
+              letterSpacing: "0.1em",
+              color: "#ffd166",
+              fontWeight: 700,
+            }}
+          >
+            Special Star Dates
+          </span>
+          <h2 style={{ fontSize: "clamp(1.7rem, 3.2vw, 2.5rem)", fontWeight: 800, marginTop: "6px", marginBottom: "24px" }}>
+            The Days Two Souls Were Born
+          </h2>
+
+          <div
+            className="birthdays-grid"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "20px",
+            }}
+          >
+            {/* Borsha's Birthday */}
+            <div
+              style={{
+                background: "rgba(255, 77, 141, 0.12)",
+                border: "1.5px solid rgba(255, 120, 180, 0.4)",
+                borderRadius: "22px",
+                padding: "24px 16px",
+              }}
+            >
+              <div style={{ fontSize: "2.4rem", marginBottom: "8px" }}>🎂🌸</div>
+              <span style={{ fontSize: "0.85rem", color: "#ff94c2", fontWeight: 700, textTransform: "uppercase" }}>
+                Her Special Day
+              </span>
+              <h3 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#fff", margin: "4px 0" }}>
+                22 June
+              </h3>
+              <p style={{ fontSize: "1.1rem", color: "#ffd166", fontWeight: 700 }}>
+                Borsha&apos;s Birthday
+              </p>
+              <p style={{ fontSize: "0.85rem", color: "#e4bed7", marginTop: "6px" }}>
+                যেদিন পৃথিবীতে আমার সুখের বৃষ্টি নেমেছিল ✨
+              </p>
+            </div>
+
+            {/* Parvej's Birthday */}
+            <div
+              style={{
+                background: "rgba(138, 43, 226, 0.15)",
+                border: "1.5px solid rgba(180, 120, 255, 0.4)",
+                borderRadius: "22px",
+                padding: "24px 16px",
+              }}
+            >
+              <div style={{ fontSize: "2.4rem", marginBottom: "8px" }}>👑✨</div>
+              <span style={{ fontSize: "0.85rem", color: "#c894ff", fontWeight: 700, textTransform: "uppercase" }}>
+                His Special Day
+              </span>
+              <h3 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#fff", margin: "4px 0" }}>
+                12 January
+              </h3>
+              <p style={{ fontSize: "1.1rem", color: "#ffd166", fontWeight: 700 }}>
+                Parvej&apos;s Birthday
+              </p>
+              <p style={{ fontSize: "0.85rem", color: "#e4bed7", marginTop: "6px" }}>
+                যে মানুষটি বর্ষাকে নিজের চেয়েও বেশি ভালোবাসে ❤️
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* LOVE COUNTER DISPLAY FROM 28 DEC 2024 */}
       <section
         style={{
           width: "100%",
@@ -531,7 +724,7 @@ export default function Home() {
               fontWeight: 700,
             }}
           >
-            Counting Every Precious Moment
+            Since 28 December 2024
           </span>
           <h2
             style={{
@@ -604,7 +797,7 @@ export default function Home() {
               fontStyle: "italic",
             }}
           >
-            “Every heartbeat since I found you belongs completely to you, Borsha.”
+            “২৮ ডিসেম্বর ২০২৪ থেকে প্রতিটা নিঃশ্বাস শুধু তোমার নামে, বর্ষা।”
           </p>
         </div>
       </section>
